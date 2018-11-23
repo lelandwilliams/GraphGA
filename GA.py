@@ -10,7 +10,7 @@ class GA:
         id_function = lambda x : x['fitness']
         self.heap = MinHeap(id_function)
         for c in population: 
-            self.heap.insert({'chr': c, 'fitness':self.fitness(c)}
+            self.heap.insert({'chr': c, 'fitness':self.fitness(c)})
         self.num_children = self.heap.size() // 4
   
     def main_loop(self):
@@ -35,7 +35,7 @@ class GA:
         parent1 = self.tournament_selection()
         parent2 = self.tournament_selection(exclude=parent1)
         x_point = random.randint(0, parent1.size)
-        return patent1[:x_point] + parent2[x_point:]
+        return parent1[:x_point] + parent2[x_point:]
 
     def uniform_crossover(self):
         parent1 = self.tournament_selection()
@@ -49,4 +49,72 @@ class GA:
                 child.append(parent1[i])
             i += 1
         return child
+
+    def mutate(self, child = None):
+        if child is None:
+            child = self.tournament_selection()
+        gene1, gene2 = random.sample(list(range(len(child))), 2)
+        max_size = len(child) -1
+
+        if child[gene1] == max_size:
+            child[gene1] -= 1
+        elif child[gene1] == 1:
+            child[gene1] = 2
+        else:
+            child[gene1] += random.choice([-1, +1])
+
+        if child[gene2] == max_size:
+            child[gene2] -= 1
+        elif child[gene2] == 1:
+            child[gene2] = 2
+        else:
+            child[gene2] += random.choice([-1, +1])
+
+        return child
+
+    def add_mutation(self, child = None, genes = None):
+        if child is None:
+            child = self.tournament_selection()
+        if genes is None:
+            gene1, gene2 = random.sample(list(range(len(child))), 2)
+        else:
+            gene1, gene2 = genes
+        max_size = len(child) -1
+        if child[gene1] == max_size or child[gene2] == max_size:
+            return self.move_mutation(child, (gene1,gene2))
+        child[gene1] += 1
+        child[gene2] += 1
+        return child
+
+    def del_mutation(self, child = None, genes = None):
+        if child is None:
+            child = self.tournament_selection()
+        if genes is None:
+            gene1, gene2 = random.sample(list(range(len(child))), 2)
+        else:
+            gene1, gene2 = genes
+        min_size = 1
+        if child[gene1] == min_size or child[gene2] == min_size:
+            return self.move_mutation(child)
+        child[gene1] -= 1
+        child[gene2] -= 1
+        return child
+
+    def move_mutation(self, child = None, genes = None):
+        if child is None:
+            child = self.tournament_selection()
+        if genes is None:
+            gene1, gene2 = random.sample(list(range(len(child))), 2)
+        else:
+            gene1, gene2 = genes
+        gene1, gene2 = random.sample(list(range(len(child))), 2)
+        min_size = 1
+        if child[gene1] == min_size and child[gene2] == min_size:
+            return self.add_mutation(child)
+        if child[gene1] == min_size and child[gene2] == min_size:
+            return self.add_mutation(child)
+        child[gene1] -= 1
+        child[gene2] -= 1
+        return child
+
 
