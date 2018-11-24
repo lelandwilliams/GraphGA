@@ -60,7 +60,7 @@ def apsp(W):
 #
 # returns an edge list unless to_graph is set to True
 # ############################################################
-def prims(self, D, start = None, to_graph = False, dist_graph = False): 
+def prims(D, start = None, to_graph = False, dist_graph = False): 
     if start is None:
         start = random.selection(D.keys())
 
