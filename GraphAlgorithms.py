@@ -62,7 +62,7 @@ def apsp(W):
 # ############################################################
 def prims(D, start = None, to_graph = False, dist_graph = False): 
     if start is None:
-        start = random.selection(D.keys())
+        start = random.choice(D.keys())
 
     visited = [start]
     edges = []
