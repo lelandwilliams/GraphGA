@@ -60,29 +60,34 @@ def apsp(W):
 #
 # returns an edge list unless to_graph is set to True
 # ############################################################
-def prims(D, start = None, to_graph = False, dist_graph = False): 
+def prims(D, start = None, to_matrix = False, dist_graph = False): 
     if start is None:
-        start = random.choice(D.keys())
+        start = random.choice(list(D.keys()))
 
     visited = [start]
     edges = []
     id_function = lambda x : x['weight']
     heap = MinHeap(item_val = id_function)
+    for dest,dist in D[start].items():
+        heap.insert({'origen':start, 'destination':dest, 'weight': dist})
 
-    for v in D.keys():
-        if v in visited:
-            continue
-        for dest,dist in D[v].iteritems():
-            if dest in visited:
-                continue
-            heap.insert({'origen':v, 'destination':dest, 'weight': dist})
+    while heap.size > 0:
         e = None
-        while e is None:
+        while e is None and heap.size > 0:
             e = heap.extract()
             if e['destination'] in visited:
                 e = None
-        edges.append(e)
 
+        if e is not None:
+            v = e['destination']
+            visited.append(v)
+            print("Visitied: ", visited)
+            edges.append(e)
+            for dest,dist in list(D[v].items()):
+                if dest in visited:
+                    continue
+                heap.insert({'origen':v, 'destination':dest, 'weight': dist})
+            
     if to_matrix:
         # initialize M
         M = {}
@@ -97,10 +102,12 @@ def prims(D, start = None, to_graph = False, dist_graph = False):
         for e in edges:
                 if dist_graph:
                     M[e['origen']][e['destination']] = e['weight']
+                    M[e['destination']][e['origen']] = e['weight']
                 else:
                     M[e['origen']][e['destination']] = 1
+                    M[e['destination']][e['origen']] = 1
 
         return M
 
-    return edges
+    return [(e['origen'],e['destination']) for e in edges] 
 
