@@ -1,4 +1,5 @@
 from Heap import MinHeap
+from collections import OrderedDict
 import random
 
 # #######################################################
@@ -111,7 +112,7 @@ def prims(D, start = None, to_matrix = False, dist_graph = False):
     return [(e['origen'],e['destination']) for e in edges] 
 
 def randSpanningTree(initial_list):
-    """ Returns a random spanning tree of from a list of vertices.
+    """ Returns a random spanning tree from a list of vertices.
         Based on prim's, but ignores weights """
     edges = []
     remaining = initial_list.copy()
@@ -130,11 +131,11 @@ def randSpanningTree(initial_list):
 def edge2chr(clist, edgelist):
     """ takes a list of vertices, and a list of edges,
     and returns a list of the degrees of the vertices """
-    d = { x:0 for x in clist}
+    d = OrderedDict()
+    for c in clist:
+        d[c] = 0
     for s,t in edgelist:
         d[s] += 1
         d[t] += 1
 
     return d
-
-
