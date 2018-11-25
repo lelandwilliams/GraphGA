@@ -1,4 +1,5 @@
 import random
+import GraphAlgorithms as galg
 from collections import OrderedDict
 from statistics import mean, stdev
 
@@ -71,50 +72,4 @@ class GA:
             child[gene2] += random.choice([-1, +1])
 
         return child
-
-    def add_mutation(self, child = None, genes = None):
-        if child is None:
-            child = self.tournament_selection()
-        if genes is None:
-            gene1, gene2 = random.sample(list(range(len(child))), 2)
-        else:
-            gene1, gene2 = genes
-        max_size = len(child) -1
-        if child[gene1] == max_size or child[gene2] == max_size:
-            return self.move_mutation(child, (gene1,gene2))
-        child[gene1] += 1
-        child[gene2] += 1
-        return child
-
-    def del_mutation(self, child = None, genes = None):
-        if child is None:
-            child = self.tournament_selection()
-        if genes is None:
-            gene1, gene2 = random.sample(list(range(len(child))), 2)
-        else:
-            gene1, gene2 = genes
-        min_size = 1
-        if child[gene1] == min_size or child[gene2] == min_size:
-            return self.move_mutation(child)
-        child[gene1] -= 1
-        child[gene2] -= 1
-        return child
-
-    def move_mutation(self, child = None, genes = None):
-        if child is None:
-            child = self.tournament_selection()
-        if genes is None:
-            gene1, gene2 = random.sample(list(range(len(child))), 2)
-        else:
-            gene1, gene2 = genes
-        gene1, gene2 = random.sample(list(range(len(child))), 2)
-        min_size = 1
-        if child[gene1] == min_size and child[gene2] == min_size:
-            return self.add_mutation(child)
-        if child[gene1] == min_size and child[gene2] == min_size:
-            return self.add_mutation(child)
-        child[gene1] -= 1
-        child[gene2] -= 1
-        return child
-
 
