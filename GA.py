@@ -62,7 +62,10 @@ class GA:
 
         return E
 
-
+    def fitness(self, c):
+        edgelist = self.chr2edgelist(c)
+        M = galg.elist2matrix(self.distances, edgelist)
+        return sum([sum(x) for x in M])
 
     def new_child(self):
         operator = random.choices(operator_weights.keys(), operator_weights.values())[0]
