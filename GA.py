@@ -49,12 +49,12 @@ class GA:
             deg_heap.insert({'v':city, 'deg':deg})
 
         while deg_heap.size > 0:
-            s = deg_heap.extract()
+            s = deg_heap.extract()['v']
             dist_heap = MinHeap(min_function)
-            for city, dist in self.distances[s]:
-                dist_heap.insert('dest':city, 'dist':dist)
+            for city, dist in self.distances[s].items():
+                dist_heap.insert({'dest':city, 'dist':dist})
             while dist_heap.size > 0 and degrees[s] > 0:
-                t = dist_heap.extract()
+                t = dist_heap.extract()['dest']
                 if (s,t) not in E and (t,s) not in E and degrees[t] > 0:
                     E.append((s,t))
                     degrees[s] -= 1
