@@ -81,7 +81,6 @@ def prims(D, start = None, to_matrix = False, dist_graph = False):
         if e is not None:
             v = e['destination']
             visited.append(v)
-            print("Visitied: ", visited)
             edges.append(e)
             for dest,dist in list(D[v].items()):
                 if dest in visited:
@@ -110,4 +109,32 @@ def prims(D, start = None, to_matrix = False, dist_graph = False):
         return M
 
     return [(e['origen'],e['destination']) for e in edges] 
+
+def randSpanningTree(initial_list):
+    """ Returns a random spanning tree of from a list of vertices.
+        Based on prim's, but ignores weights """
+    edges = []
+    remaining = initial_list.copy()
+    visited = [random.choice(remaining)]
+    remaining.remove(visited[-1])
+
+    while len(remaining) > 0:
+        origen = random.choice(visited)
+        destination = random.choice(remaining)
+        remaining.remove(destination)
+        edges.append((origen,destination))
+        visited.append(destination)
+
+    return edges
+
+def edge2chr(clist, edgelist):
+    """ takes a list of vertices, and a list of edges,
+    and returns a list of the degrees of the vertices """
+    d = { x:0 for x in clist}
+    for s,t in edgelist:
+        d[s] += 1
+        d[t] += 1
+
+    return d
+
 
