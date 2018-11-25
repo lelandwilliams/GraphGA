@@ -1,6 +1,6 @@
 import random
 from collections import OrderedDict
-from statistics import mean, stddev
+from statistics import mean, stdev
 
 class GA:
     def __init__(self, population):
@@ -16,7 +16,7 @@ class GA:
     def main_loop(self):
         done = False
         while not done:
-            for in range(self.num_children):
+            for _ in range(self.num_children):
                 c = self.new_child()
                 fitness = self.fitness(c)
                 if self.heap.heap[1]['fitness'] < fitness :
