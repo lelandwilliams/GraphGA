@@ -14,8 +14,13 @@ class GA:
         self.cities = list(self.distances.keys())
         self.num_children = self.pop_size // 3
 
-        # Generate the initial population
-        population = []
+        self.mst = galg.prims(self.distances)
+        M = galg.edge2Matrix(self.distances, self.mst)
+        A = galg.apsp(M)
+        #self.mstcost = sum([sum(x) for x in A])
+
+        # Generate the initial population, with a copy of mst in it
+        population = [self.mst.copy()]
         while len(population) < self.pop_size:
             population.append(self.random_child())
 
@@ -64,8 +69,12 @@ class GA:
 
     def fitness(self, c):
         edgelist = self.chr2edgelist(c)
-        M = galg.elist2matrix(self.distances, edgelist)
-        return sum([sum(x) for x in M])
+        M = galg.edge2Matrix(self.distances, edgelist)
+        A = galg.apsp(M)
+        s = sum([sum(x) for x in M])
+        if s == float('inf'):
+            return 0
+        return s
 
     def new_child(self):
         operator = random.choices(operator_weights.keys(), operator_weights.values())[0]
