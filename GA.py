@@ -16,8 +16,9 @@ class GA:
 
         self.mst = galg.prims(self.distances)
         M = galg.edge2Matrix(self.distances, self.mst)
+        self.mst_cost = sum([self.distances[s][t] for s,t in self.mst])
         A = galg.apsp(M)
-        self.mstcost = sum([sum(x) for x in A])
+        self.mst_dsum = round(sum([sum(x) for x in A]),2 )
 
         # Generate the initial population, with a copy of mst in it
         population = [self.mst.copy()]
@@ -69,12 +70,13 @@ class GA:
 
     def fitness(self, c):
         edgelist = self.chr2edgelist(c)
+        cost = sum([self.distances(s,t) for s,t in edgelist])
         M = galg.edge2Matrix(self.distances, edgelist)
         A = galg.apsp(M)
-        s = sum([sum(x) for x in M])
-        if s == float('inf'):
+        apsp_sum = sum([sum(x) for x in M])
+        if apsp_sum == float('inf'):
             return 0
-        return s
+        return 10 + ((self.mst_dsum - apsp_sum) * g.mst_cost / cost)
 
     def new_child(self):
         operator = random.choices(operator_weights.keys(), operator_weights.values())[0]
