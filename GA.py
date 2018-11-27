@@ -130,7 +130,7 @@ class GA:
         num_cities = len(self.distances)
         #c = [1] * num_cities
         tree = galg.randSpanningTree(list(self.distances.keys()))
-        c = list(galg.edge2chr(self.cities, tree).values())
+        c = galg.edge2chr(self.cities, tree)
         most = num_cities - 1
         least = 0
         mode = most // 4

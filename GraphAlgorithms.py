@@ -138,7 +138,7 @@ def edge2chr(clist, edgelist):
         d[s] += 1
         d[t] += 1
 
-    return d
+    return list(d.values())
 
 def edge2dict(distances, E):
     # initialize M
