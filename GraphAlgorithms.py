@@ -30,7 +30,7 @@ def apsp(W):
         for i in range(n):
             for j in range(n):
                 for k in range(n):
-                    M[i][j] = min(M[i][j], L[a][i][k] + L[b][k][j])
+                    M[i][j] = round(min(M[i][j], L[a][i][k] + L[b][k][j]), 2)
         return M
     
     #
