@@ -25,7 +25,7 @@ def apsp(W):
             L[a] = ExtendShortestPaths(L, a//2, a - a//2)
         if L[b] is None:
             L[b] = ExtendShortestPaths(L, b//2, b - b//2)
-        n = len(l[a])
+        n = len(L[a])
         M = newMatrix(n)
         for i in range(n):
             for j in range(n):
@@ -139,3 +139,28 @@ def edge2chr(clist, edgelist):
         d[t] += 1
 
     return d
+
+def edge2dict(distances, E):
+    # initialize M
+    D = {}
+    for k in distances.keys():
+        D[k] = {}
+        for l in distances.keys():
+            if k == l:
+                D[k][l] = 0
+            else:
+                D[k][l] = float('inf')
+
+    for s,t in E:
+        D[s][t] = distances[s][t]
+        D[t][s] = distances[t][s]
+
+    return D
+
+def edge2Matrix(D, E):
+    N = edge2dict(D,E)
+    M = []
+    for x in N.values():
+        M.append(list(x.values()))
+    return M
+
