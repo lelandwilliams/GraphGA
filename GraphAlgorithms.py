@@ -49,7 +49,7 @@ def apsp(W):
     L[0] = l
     
     L[n] = ExtendShortestPaths(L, n//2, n - n//2)
-    return L
+    return L[-1]
     
 # ############################################################
 #           prims.py
