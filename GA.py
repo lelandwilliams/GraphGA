@@ -46,7 +46,7 @@ class GA:
     def chr2edgelist(self, c):
         id_function = lambda x:x['deg']
         min_function = lambda x:x['dist']
-        deg_heap = MaxHeap(id_function)
+        deg_heap = MinHeap(id_function)
         degrees = {}
         E = []
 
@@ -61,7 +61,7 @@ class GA:
                 dist_heap.insert({'dest':city, 'dist':dist})
             while dist_heap.size > 0 and degrees[s] > 0:
                 t = dist_heap.extract()['dest']
-                if (s,t) not in E and (t,s) not in E and degrees[t] > 0:
+                if s != t and (s,t) not in E and (t,s) not in E and degrees[t] > 0:
                     E.append((s,t))
                     degrees[s] -= 1
                     degrees[t] -= 1
@@ -70,7 +70,7 @@ class GA:
 
     def fitness(self, c):
         edgelist = self.chr2edgelist(c)
-        cost = sum([self.distances(s,t) for s,t in edgelist])
+        cost = sum([self.distances[s][t] for s,t in edgelist])
         M = galg.edge2Matrix(self.distances, edgelist)
         A = galg.apsp(M)
         apsp_sum = sum([sum(x) for x in M])
