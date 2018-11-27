@@ -17,7 +17,7 @@ class GA:
         self.mst = galg.prims(self.distances)
         M = galg.edge2Matrix(self.distances, self.mst)
         A = galg.apsp(M)
-        #self.mstcost = sum([sum(x) for x in A])
+        self.mstcost = sum([sum(x) for x in A])
 
         # Generate the initial population, with a copy of mst in it
         population = [self.mst.copy()]
