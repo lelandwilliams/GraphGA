@@ -52,6 +52,19 @@ class MinHeap:
             self.heap[i] = swap_val
             i = i//2
 
+    def decrement(self, item, item_str, key_str):
+        for entry, idx in enumerate(self.heap,1): 
+            # must start at 1 because 0 is always none
+            if entry[item_str] == item:
+                entry[key_str] -= 1
+                cur_idx = idx
+                parent_idx = idx //2
+                while parent_idx > 0 and self.heap[parent_idx][key_str] > self.heap[cur_idx][key_str]:
+                    swap = self.heap[parent_idx]
+                    self.heap[parent_idx] = self.heap[cur_idx]
+                    self.heap[cur_idx] = swap
+                return
+
     def extract(self):
         if self.size < 1:
             raise HeapUnderflowError
