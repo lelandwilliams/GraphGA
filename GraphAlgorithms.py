@@ -164,3 +164,6 @@ def edge2Matrix(D, E):
         M.append(list(x.values()))
     return M
 
+def edge_apsp(distances, E):
+    M = edge2Matrix(distances, E)
+    return apsp(M)
