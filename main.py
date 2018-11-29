@@ -1,6 +1,7 @@
 import GraphAlgorithms as galg
 import maketable
-import GA as ga
+#import GA as ga
+from EdgeGA import EdgeGA as ga
 
 def write_edgelist(elist):
     with open("edges.csv", "w") as f:
@@ -13,6 +14,6 @@ cities = maketable.getCities("cities/cities_us.txt", 20)
 distances = maketable.getDistances(cities)
 mst = galg.prims(distances)
 rst = galg.randSpanningTree(list(distances.keys()))
-g = ga.GA(distances)
+g = ga(distances)
 
 
