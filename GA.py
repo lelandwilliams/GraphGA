@@ -65,6 +65,7 @@ class GA:
                     E.append((s,t))
                     degrees[s] -= 1
                     degrees[t] -= 1
+                    deg_heap.decrement(t, 'v', 'deg')
 
         return E
 
