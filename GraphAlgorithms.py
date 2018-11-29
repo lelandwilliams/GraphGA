@@ -167,3 +167,8 @@ def edge2Matrix(D, E):
 def edge_apsp(distances, E):
     M = edge2Matrix(distances, E)
     return apsp(M)
+
+def edge_apsp_sum(distances, E):
+    M = edge2Matrix(distances, E)
+    return sum([sum(x) for x in apsp(M)])
+
