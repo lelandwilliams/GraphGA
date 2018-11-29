@@ -6,19 +6,19 @@ from Heap import MaxHeap, MinHeap
 
 class EdgeGA:
     def __init__(self, distances_matrix):
-        self.name = "Edge GA"
-        #self.operators = []
-        #self.operator_weights = dict((op,1) for op in self.operators)
-        self.generation = 0
         self.distances = distances_matrix
+        self.name = "Edge GA"
+        self.generation = 0
         self.pop_size = 2 * len(self.distances)
         self.cities = list(self.distances.keys())
         self.num_children = self.pop_size // 3
 
+        # Remember MST version of 
         self.mst = galg.prims(self.distances)
         self.mst_cost = sum([self.distances[s][t] for s,t in self.mst])
-        A = galg.edge_apsp(self.distances, self.mst)
-        self.mst_dsum = round(sum([sum(x) for x in A]),2 )
+        #A = galg.edge_apsp(self.distances, self.mst)
+        #self.mst_dsum = round(sum([sum(x) for x in A]),2 )
+        self.mst_dsum = round(galg.edge_apsp_sum(self.distances, self.mst), 2)
 
         # Generate the initial population, with a copy of mst in it
         population = [self.mst.copy()]
@@ -43,67 +43,21 @@ class EdgeGA:
                     self.heap.insert({'chr': c, 'fitness': fitness})
         pass
   
-    def chr2edgelist(self, c):
-        id_function = lambda x:x['deg']
-        min_function = lambda x:x['dist']
-        deg_heap = MinHeap(id_function)
-        degrees = {}
-        E = []
-
-        for city, deg in zip(self.cities, c):
-            degrees[city] = deg
-            deg_heap.insert({'v':city, 'deg':deg})
-
-        while deg_heap.size > 0:
-            s = deg_heap.extract()['v']
-            dist_heap = MinHeap(min_function)
-            for city, dist in self.distances[s].items():
-                dist_heap.insert({'dest':city, 'dist':dist})
-            while dist_heap.size > 0 and degrees[s] > 0:
-                t = dist_heap.extract()['dest']
-                if s != t and (s,t) not in E and (t,s) not in E and degrees[t] > 0:
-                    E.append((s,t))
-                    degrees[s] -= 1
-                    degrees[t] -= 1
-                    deg_heap.decrement(t, 'v', 'deg')
-
-        return E
-
     def fitness(self, c):
-        edgelist = self.chr2edgelist(c)
-        cost = sum([self.distances[s][t] for s,t in edgelist])
-        M = galg.edge2Matrix(self.distances, edgelist)
-        A = galg.apsp(M)
-        apsp_sum = sum([sum(x) for x in M])
+        cost = sum([self.distances[s][t] for s,t in c])
+        apsp_sum = galg.edge_apsp_sum(self.distances, c)
         if apsp_sum == float('inf'):
-            return 0
-        return 10 + ((self.mst_dsum - apsp_sum) * g.mst_cost / cost)
+            apsp_sum = self.mst_dsum # result will be 0
 
-    def new_child(self):
-        operator = random.choices(operator_weights.keys(), operator_weights.values())[0]
-        child = operator()
-        if child.fitness > self.min_fitness:
-            operator_weights[operator] += 1
-        return child
+        included_vertices = []
+        for s,t in c:
+            if s not in included_vertices:
+                included_vertices.append(s)
+            if t not in included_vertices:
+                included_vertices.append(t)
+        base_score = round( len(self.cities) ** (len(included_vertices) / len(self.cities)), 2)
 
-    def singlepoint_crossover(self):
-        parent1 = self.tournament_selection()
-        parent2 = self.tournament_selection(exclude=parent1)
-        x_point = random.randint(0, parent1.size)
-        return parent1[:x_point] + parent2[x_point:]
-
-    def uniform_crossover(self):
-        parent1 = self.tournament_selection()
-        parent2 = self.tournament_selection(exclude=parent1)
-        child = []
-        i = 0
-        for bit in random.choices([0,1] * self.size, self.size):
-            if bit == 0:
-                child.append(parent1[i])
-            else:
-                child.append(parent1[i])
-            i += 1
-        return child
+        return round( base_score + ((self.mst_dsum - apsp_sum) * self.mst_cost / cost), 2)
 
     def mutate(self, child = None):
         if child is None:
