@@ -9,15 +9,17 @@ class EdgeGA:
         self.distances = distances_matrix
         self.name = "Edge GA"
         self.generation = 0
-        self.pop_size = 2 * len(self.distances)
         self.cities = list(self.distances.keys())
-        self.num_children = self.pop_size // 3
 
-        # Remember MST version of 
+        # Algorithm Parameters
+        self.crossover_choice_p = 0.45
+        self.pop_size = 2 * len(self.distances)
+        self.num_children = self.pop_size // 3
+        self.tournament_size = len(self.distances) // 10
+
+        # Remember MST of map
         self.mst = galg.prims(self.distances)
-        self.mst_cost = sum([self.distances[s][t] for s,t in self.mst])
-        #A = galg.edge_apsp(self.distances, self.mst)
-        #self.mst_dsum = round(sum([sum(x) for x in A]),2 )
+        self.mst_cost = round(sum([self.distances[s][t] for s,t in self.mst]), 2)
         self.mst_dsum = round(galg.edge_apsp_sum(self.distances, self.mst), 2)
 
         # Generate the initial population, with a copy of mst in it
@@ -29,8 +31,8 @@ class EdgeGA:
         # replacement faster
         id_function = lambda x : x['fitness']
         self.heap = MinHeap(id_function)
-#        for c in population: 
-#            self.heap.insert({'chr': c, 'fitness':self.fitness(c)})
+        for c in population: 
+            self.heap.insert({'chr': c, 'fitness':self.fitness(c)})
   
     def main_loop(self):
         done = False
@@ -43,6 +45,9 @@ class EdgeGA:
                     self.heap.insert({'chr': c, 'fitness': fitness})
         pass
   
+    def crossover(self,c):
+        pass
+
     def fitness(self, c):
         cost = sum([self.distances[s][t] for s,t in c])
         apsp_sum = galg.edge_apsp_sum(self.distances, c)
@@ -82,6 +87,7 @@ class EdgeGA:
         return child
 
     def random_child(self):
+        return galg.randSpanningTree(list(self.distances.keys()))
         num_cities = len(self.distances)
         #c = [1] * num_cities
         tree = galg.randSpanningTree(list(self.distances.keys()))
@@ -96,5 +102,10 @@ class EdgeGA:
 
         return c
 
-
-
+    def tournament_selection(self):
+        candidates = random.sample(self.heap.heap[1:], self.tournament_size)
+        strongest = candidates[0]
+        for candidate in candidates[1:]:
+            if candidate['fitness'] > strongest['fitness']:
+                strongest = candidate
+        return strongest['chr']
