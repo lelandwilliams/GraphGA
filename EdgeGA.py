@@ -45,8 +45,15 @@ class EdgeGA:
                     self.heap.insert({'chr': c, 'fitness': fitness})
         pass
   
-    def crossover(self,c):
-        pass
+    def crossover(self, c1, c2):
+        new_c = []
+        for s,t in c1:
+            if (s,t) in c2 or (t,s) in c2 or random.random() < self.crossover_choice_p:
+                new_c.append((s,t))
+        for s,t in c2:
+            if (s,t) not in new_c and (t,s) not in new_c and random.random() < self.crossover_choice_p:
+                new_c.append((s,t))
+        return new_c
 
     def fitness(self, c):
         cost = sum([self.distances[s][t] for s,t in c])
@@ -54,13 +61,14 @@ class EdgeGA:
         if apsp_sum == float('inf'):
             apsp_sum = self.mst_dsum # result will be 0
 
-        included_vertices = []
-        for s,t in c:
-            if s not in included_vertices:
-                included_vertices.append(s)
-            if t not in included_vertices:
-                included_vertices.append(t)
-        base_score = round( len(self.cities) ** (len(included_vertices) / len(self.cities)), 2)
+#       included_vertices = []
+#       for s,t in c:
+#           if s not in included_vertices:
+#               included_vertices.append(s)
+#           if t not in included_vertices:
+#               included_vertices.append(t)
+#       base_score = round( len(self.cities) ** (len(included_vertices) / len(self.cities)), 2)
+        base_score = 0
 
         return round( base_score + ((self.mst_dsum - apsp_sum) * self.mst_cost / cost), 2)
 
