@@ -37,7 +37,7 @@ class EdgeGA:
         for c in population: 
             self.heap.insert({'chr': c, 'fitness':self.fitness(c)})
   
-    def evolove(self):
+    def evolve(self):
         children = []
         for _ in range(self.num_children):
             children.append(self.new_child())
@@ -48,12 +48,12 @@ class EdgeGA:
                 self.heap.insert({'chr': child, 'fitness': fitness})
 
     def new_child(self) :
-        p1 = self.tournament_select()
+        p1 = self.tournament_selection()
         child = p1
         if random.random() < self.crossover_rate:
             p2 = p1
             while p2 == p1:
-                p2 = self.tournament_select()
+                p2 = self.tournament_selection()
             child = self.crossover(p1, p2)
         if random.random() < self.mutation_rate:
             child = self.mutate(child)
@@ -88,7 +88,7 @@ class EdgeGA:
         return round( base_score + ((self.mst_dsum - apsp_sum) * self.mst_cost / cost), 2)
 
     def mutate(self, d):
-        r = random.randomint(sum(self.mutation_weights))
+        r = random.randint(0, sum(self.mutation_weights))
         if r <= self.mutation_weights[0]:
             return self.mutate_delete(d)
         r -= self.mutation_weights[0]
@@ -115,10 +115,10 @@ class EdgeGA:
                     one_deg.append(city)
                 elif city not in many_deg and city in one_deg:
                     one_deg.remove(city)
-                    many_def.append(city)
+                    many_deg.append(city)
 
         for idx in random.sample(range(len(c)), len(c)):
-            if c[idx][0] in many_deg and c[idx][i] in many_deg:
+            if c[idx][0] in many_deg and c[idx][1] in many_deg:
                 c.pop(idx)
                 return c
                 
@@ -127,9 +127,9 @@ class EdgeGA:
         s,t = c.pop(random.choice(range(len(c))))
         u,v = random.sample(self.cities, 2)
         while (s,u) in c or (u,s) in c:
-            u = random.sample(self.cities)
+            u = random.choice(self.cities)
         while (t,v) in c or (v,t) in c:
-            t = random.sample(self.cities)
+            t = random.choice(self.cities)
         c.append((s,u))
         c.append((t,v))
         return c
