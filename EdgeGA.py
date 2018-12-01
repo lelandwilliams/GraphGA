@@ -88,6 +88,13 @@ class EdgeGA:
         return round( base_score + ((self.mst_dsum - apsp_sum) * self.mst_cost / cost), 2)
 
     def mutate(self, d):
+        r = random.randomint(sum(self.mutation_weights))
+        if r <= self.mutation_weights[0]:
+            return self.mutate_delete(d)
+        r -= self.mutation_weights[0]
+        if r <= self.mutation_weights[1]:
+            return self.mutate_split(d)
+        return self.mutate_add(d)
         
     def mutate_add(self, d):
         c = d.copy()
