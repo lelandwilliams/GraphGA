@@ -1,5 +1,7 @@
 import GraphAlgorithms as galg
+from statistics import mean as mean
 import maketable
+import random
 #import GA as ga
 from EdgeGA import EdgeGA as ga
 
