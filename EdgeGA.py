@@ -37,16 +37,16 @@ class EdgeGA:
         for c in population: 
             self.heap.insert({'chr': c, 'fitness':self.fitness(c)})
   
-    def main_loop(self):
-        done = False
-        while not done:
-            for _ in range(self.num_children):
-                c = self.new_child()
-                fitness = self.fitness(c)
-                if self.heap.heap[1]['fitness'] < fitness :
-                    self.heap.extract()
-                    self.heap.insert({'chr': c, 'fitness': fitness})
-  
+    def evolove(self):
+        children = []
+        for _ in range(self.num_children):
+            children.append(self.new_child())
+        for child in children:
+            fitness = self.fitness(child)
+            if self.heap.heap[1]['fitness'] < fitness :
+                self.heap.extract()
+                self.heap.insert({'chr': child, 'fitness': fitness})
+
     def new_child(self) :
         p1 = self.tournament_select()
         child = p1
