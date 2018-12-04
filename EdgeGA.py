@@ -38,6 +38,7 @@ class EdgeGA:
             self.heap.insert({'chr': c, 'fitness':self.fitness(c)})
   
     def evolve(self):
+        self.generation += 1
         children = []
         for _ in range(self.num_children):
             children.append(self.new_child())
