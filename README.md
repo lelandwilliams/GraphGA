@@ -10,11 +10,12 @@ the other to the users. My final multiobjective function is the user cost of the
 
 I implemented in Python a genetic algorithm to evolve optimal networks. The graphs were represented as edge-lists, 
 which required devising original mutation and recombination algorithms. I wrote my own implementations of Prim's and
-All-Pairs-Shortest-Paths, using the explanations in CLRF as a reference.
+All-Pairs-Shortest-Paths, using the explanations in CLRF as a reference. Were I doing it again, I would utilize NumPy
+and SciPy to reduce the expense of matrix operations.
 
 The maps in the pdf write-up of the project are the output of some scripting I did in R-Studio. I was taking a statistics
 class at the time of this project which utilitzed R. I had some help from my instructor in writing effecient R loops.
 
 The algorithm and the objective function succeded in finding viable transport solutions.
 
-This was submitted as the final project of a class in Genetic Algorithms. The idea for the project was my own.
+This was submitted as the final project of a course in genetic algorithms. The idea for the project was my own.
